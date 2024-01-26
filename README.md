@@ -9,3 +9,4 @@ Currently, two official plugins are available:
 
 push test
 push test2
+push test3
