@@ -1,4 +1,4 @@
-pipeline {
+peline {
     agent any
 
     environment {
@@ -14,18 +14,21 @@ pipeline {
         stage('Frontend Deploy') {
             steps {
                 script {
+                    // 컨테이너가 실행 중인지 확인
                     def isRunning = sh(script: 'docker ps -a -q --filter name=vite-app | grep -q .', returnStatus: true)
                     if (isRunning == 0) {
-                        // If container is running, stop and remove it
+                        // 컨테이너가 실행 중이면 중지 및 제거
                         sh 'docker stop vite-app && docker rm vite-app'
                     }
                 }
-                sh 'docker run -d -p 3000:3000 --name vite-app swerd245/vite-app'
+                // 새 컨테이너 실행
+                sh 'docker run -d -p 80:80 --name vite-app swerd245/vite-app'
             }
         }
 
         stage('Frontend Finish') {
-            steps{
+            steps {
+                // 쓸모없는 이미지 제거
                 sh 'docker images -qf dangling=true | xargs -I{} docker rmi {}'
             }
         }
