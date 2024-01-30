@@ -11,10 +11,21 @@ pipeline {
 
     stages {
         stage('Initialize') {
-            steps {
-                script {
-                    echo "Deployment environment selected: ${params.DEPLOY_ENV}"
-                    echo "Current branch: ${env.BRANCH_NAME}"
+		steps {
+                    script {
+                    // 현재 체크아웃된 브랜치 이름을 가져오는 스크립트
+                    def branchName = sh(
+                        script: 'git rev-parse --abbrev-ref HEAD',
+                        returnStdout: true
+                    ).trim()
+                    echo "Current branch: ${branchName}"
+
+                    // 선택된 배포 환경 설정
+                    if (branchName == 'main') {
+                        env.DEPLOY_ENV = 'EC2'
+                    } else if (branchName == 'develop') {
+                        env.DEPLOY_ENV = 'local'
+                    }
                 }
             }
         }
