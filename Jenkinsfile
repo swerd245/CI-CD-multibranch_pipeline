@@ -8,27 +8,27 @@ pipeline {
             description: 'Choose the deployment environment'
         )
     }
-
     stages {
         stage('Initialize') {
-		steps {
-                    script {
-                    // 현재 체크아웃된 브랜치 이름을 가져오는 스크립트
-                    def branchName = sh(
-                        script: 'git rev-parse --abbrev-ref HEAD',
+            steps {
+                script {
+                    // 현재 체크아웃된 커밋이 어느 브랜치에 속하는지 확인
+                    def currentBranch = sh(
+                        script: 'git branch --contains HEAD | grep "*" | cut -d " " -f2',
                         returnStdout: true
                     ).trim()
-                    echo "Current branch: ${branchName}"
+                    echo "Current branch: ${currentBranch}"
 
                     // 선택된 배포 환경 설정
-                    if (branchName == 'main') {
+                    if (currentBranch == 'main') {
                         env.DEPLOY_ENV = 'EC2'
-                    } else if (branchName == 'develop') {
+                    } else if (currentBranch == 'develop') {
                         env.DEPLOY_ENV = 'local'
                     }
                 }
             }
         }
+
 
         stage('Build and Deploy to Local') {
             when {
