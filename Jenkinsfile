@@ -10,7 +10,7 @@ pipeline {
 
         stage('Build Project') {
             steps {
-                sh 'npm run build'
+                sh './gradlew clean build'
             }
         }
 
@@ -22,13 +22,13 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t chrkb1569/jenkins:test .'
+                sh 'docker build -t swerd245/vite-app .'
             }
         }
 
         stage('Push Docker Image') {
             steps {
-                sh 'docker push chrkb1569/jenkins:test'
+                sh 'docker push swerd245/vite-app'
             }
         }
     }
