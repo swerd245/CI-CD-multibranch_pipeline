@@ -25,10 +25,10 @@ pipeline {
             steps {
                 script {
                     sshagent (credentials : ['ec2-ssh-key']) {
-                        sh "scp -o StrictHostKeyChecking=no ./Dockerfile ${EC2_USER}@${EC2_IP}:~/"
-                        sh "ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_IP} 'docker build -t swerd245/vite-app ./'"
-                        sh "ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_IP} 'docker stop vite-app || true && docker rm vite-app || true'"
-                        sh "ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_IP} 'docker run -d -p 8081:80 --name vite-app swerd245/vite-app'"
+                        sh "scp -o StrictHostKeyChecking=no ./Dockerfile ec2-user@3.90.3.174:~/"
+                        sh "ssh -o StrictHostKeyChecking=no ec2-user@3.90.3.174 'docker build -t swerd245/vite-app ./'"
+                        sh "ssh -o StrictHostKeyChecking=no ec2-user@3.90.3.174 'docker stop vite-app || true && docker rm vite-app || true'"
+                        sh "ssh -o StrictHostKeyChecking=no ec2-user@3.90.3.174 'docker run -d -p 8081:80 --name vite-app swerd245/vite-app'"
                     }
                 }
             }
