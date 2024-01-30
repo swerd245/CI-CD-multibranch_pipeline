@@ -10,7 +10,7 @@ pipeline {
 
         stage('Build Project') {
             steps {
-                sh './npm run build'
+                sh 'npm run build'
             }
         }
 
