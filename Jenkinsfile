@@ -23,9 +23,11 @@ pipeline {
                 expression { params.DEPLOY_ENV == 'local' }
             }
             steps {
-                echo 'Build and Deploy to Local Environment'
-                sh 'docker build -t swerd245/vite-app ./'
-                sh 'docker run -d -p 8081:80 --name vite-app swerd245/vite-app'
+	        echo 'Build and Deploy to Local Environment'
+	        sh 'docker build -t swerd245/vite-app ./'
+	        sh 'docker stop vite-app || true'
+	        sh 'docker rm vite-app || true'
+	        sh 'docker run -d -p 8081:80 --name vite-app swerd245/vite-app'
             }
         }
 
@@ -46,4 +48,8 @@ pipeline {
             }
         }
     }
+}
+
+node {
+   // EC2 배포 관련 스크립트
 }
