@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         GIT_URL = "https://github.com/designagune/TEST_REPO"
-        EC2_IP = "3.90.3.174" // EC2 인스턴스의 IP 주소
+        EC2_IP = "3.90.3.174" // EC2 인스턴스의 IP 주소 test
         EC2_USER = "ec2-user" // EC2 인스턴스의 사용자명
     }
 
