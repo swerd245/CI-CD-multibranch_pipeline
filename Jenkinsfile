@@ -25,7 +25,7 @@ pipeline {
             steps {
                 echo 'Deploying to EC2 Enviroment'
                 script {
-                    sshagent (credentials : ['ec2-ssh-key']) {
+                    sshagent (credentials : ['ec2-user']) {
                         sh "scp -o StrictHostKeyChecking=no ./Dockerfile ec2-user@3.90.3.174:~/"
                         sh "ssh -o StrictHostKeyChecking=no ec2-user@3.90.3.174 'docker build -t swerd245/vite-app ./'"
                         sh "ssh -o StrictHostKeyChecking=no ec2-user@3.90.3.174 'docker stop vite-app || true && docker rm vite-app || true'"
