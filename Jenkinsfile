@@ -32,7 +32,10 @@ pipeline {
 
         stage('Frontend Finish') {
             steps {
-                sh 'docker images -qf dangling=true | xargs -r docker rmi'
+		    // 중지된 컨테이너를 삭제
+                    sh 'docker ps -a -q --filter status=exited | xargs -r docker rm'
+                    // dangling 이미지 강제 삭제
+                    sh 'docker images -qf dangling=true | xargs -r docker rmi -f'
             }
         }
     }
