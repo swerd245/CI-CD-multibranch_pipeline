@@ -13,7 +13,7 @@ Make sure you have the following installed:
 
 The React app was bootstrapped using [Vite](https://vitejs.dev/).
 
-## Installation and running locally
+## Installation and running locallytes
 
 ```sh
 npm run install
