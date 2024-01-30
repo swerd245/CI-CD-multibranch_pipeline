@@ -8,12 +8,6 @@ pipeline {
             }
         }
 
-        stage('Build Project') {
-            steps {
-                sh './gradlew clean build'
-            }
-        }
-
         stage('Docker Login') {
             steps {
                 sh 'echo gkstndk132! | docker login -u swerd245@gmail.com --password-stdin'
