@@ -14,26 +14,27 @@ pipeline {
             steps {
                 script {
                     echo "Deployment environment selected: ${params.DEPLOY_ENV}"
+                    echo "Current branch: ${env.BRANCH_NAME}"
                 }
             }
         }
 
         stage('Build and Deploy to Local') {
             when {
-                expression { params.DEPLOY_ENV == 'local' }
+                branch 'develop'
             }
             steps {
-	        echo 'Build and Deploy to Local Environment'
-	        sh 'docker build -t swerd245/vite-app ./'
-	        sh 'docker stop vite-app || true'
-	        sh 'docker rm vite-app || true'
-	        sh 'docker run -d -p 8081:80 --name vite-app swerd245/vite-app'
+                echo 'Build and Deploy to Local Environment'
+                sh 'docker build -t swerd245/vite-app ./'
+                sh 'docker stop vite-app || true'
+                sh 'docker rm vite-app || true'
+                sh 'docker run -d -p 8081:80 --name vite-app swerd245/vite-app'
             }
         }
 
         stage('Build and Deploy to EC2') {
             when {
-                expression { params.DEPLOY_ENV == 'EC2' }
+                branch 'main'
             }
             steps {
                 echo 'Deploying to EC2 Environment'
@@ -48,8 +49,4 @@ pipeline {
             }
         }
     }
-}
-
-node {
-   // EC2 배포 관련 스크립트
 }
