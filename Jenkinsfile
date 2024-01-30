@@ -23,6 +23,7 @@ pipeline {
                 branch 'main' // main 브랜치에서만 실행
             }
             steps {
+                echo 'Deploying to EC2 Enviroment'
                 script {
                     sshagent (credentials : ['ec2-ssh-key']) {
                         sh "scp -o StrictHostKeyChecking=no ./Dockerfile ec2-user@3.90.3.174:~/"
