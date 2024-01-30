@@ -15,9 +15,9 @@ pipeline {
             steps {
                 script {
                     // 80번 포트를 사용 중인 컨테이너 확인 및 중지
-                    def isPortInUse = sh(script: "docker ps -q --filter 'ancestor=nginx' --filter 'status=running'", returnStatus: true)
+                    def isPortInUse = sh(script: "docker ps -q --filter 'port=80'", returnStatus: true)
                     if (isPortInUse == 0) {
-                        sh "docker ps -q --filter 'ancestor=nginx' --filter 'status=running' | xargs -r docker stop"
+                        sh "docker ps -q --filter 'port=80' | xargs -r docker stop"
                     }
 
                     // 기존 vite-app 컨테이너 확인 및 중지
