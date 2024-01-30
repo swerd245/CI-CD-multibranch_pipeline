@@ -1,19 +1,29 @@
 pipeline {
     agent any
 
-    environment {
-        GIT_URL = "https://github.com/designagune/TEST_REPO"
-        EC2_IP = "3.90.3.174" // EC2 인스턴스의 IP 주소
-        EC2_USER = "ec2-user" // EC2 인스턴스의 사용자명
+    parameters {
+        choice(
+            name: 'DEPLOY_ENV',
+            choices: ['local', 'EC2'],
+            description: 'Choose the deployment environment'
+        )
     }
 
-    stages { // 'stages' 블록 추가
+    stages {
+        stage('Initialize') {
+            steps {
+                script {
+                    echo "Deployment environment selected: ${params.DEPLOY_ENV}"
+                }
+            }
+        }
+
         stage('Build and Deploy to Local') {
             when {
-                branch 'develop' // develop 브랜치에서만 실행
+                expression { params.DEPLOY_ENV == 'local' }
             }
             steps {
-                echo 'Build and Deploy to Local'
+                echo 'Build and Deploy to Local Environment'
                 sh 'docker build -t swerd245/vite-app ./'
                 sh 'docker run -d -p 8081:80 --name vite-app swerd245/vite-app'
             }
@@ -21,12 +31,12 @@ pipeline {
 
         stage('Build and Deploy to EC2') {
             when {
-                branch 'main' // main 브랜치에서만 실행
+                expression { params.DEPLOY_ENV == 'EC2' }
             }
             steps {
                 echo 'Deploying to EC2 Environment'
                 script {
-                    sshagent (credentials : ['ec2-user']) { // 'ec2-ssh-key'는 Jenkins 자격 증명 ID
+                    sshagent(credentials: ['ec2-user']) {
                         sh "scp -o StrictHostKeyChecking=no ./Dockerfile ${EC2_USER}@${EC2_IP}:~/"
                         sh "ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_IP} 'docker build -t swerd245/vite-app ./'"
                         sh "ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_IP} 'docker stop vite-app || true && docker rm vite-app || true'"
