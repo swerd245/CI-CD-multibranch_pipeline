@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    
+
     environment {
         GIT_URL = "https://github.com/designagune/TEST_REPO"
     }
@@ -13,7 +13,13 @@ pipeline {
 
         stage('Frontend Deploy') {
             steps {
-                sh 'docker ps -a -q --filter name=frontend | grep -q . && docker stop swerd245/vite-app && docker rm swerd245/vite-app'
+                script {
+                    def isRunning = sh(script: 'docker ps -a -q --filter name=vite-app | grep -q .', returnStatus: true)
+                    if (isRunning == 0) {
+                        // If container is running, stop and remove it
+                        sh 'docker stop vite-app && docker rm vite-app'
+                    }
+                }
                 sh 'docker run -d -p 3000:3000 --name vite-app swerd245/vite-app'
             }
         }
@@ -23,6 +29,5 @@ pipeline {
                 sh 'docker images -qf dangling=true | xargs -I{} docker rmi {}'
             }
         }
-
     }
 }
