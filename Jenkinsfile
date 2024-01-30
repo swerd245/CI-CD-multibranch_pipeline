@@ -14,6 +14,13 @@ pipeline {
         stage('Frontend Deploy') {
             steps {
                 script {
+                    // 포트 80을 사용 중인 컨테이너 확인 및 중지
+                    def isPortInUse = sh(script: "docker ps -q --filter 'port=80'", returnStatus: true)
+                    if (isPortInUse == 0) {
+                        sh "docker ps -q --filter 'port=80' | xargs -r docker stop"
+                    }
+
+                    // 기존 vite-app 컨테이너 확인 및 중지
                     def isRunning = sh(script: 'docker ps -a -q --filter name=vite-app | grep -q .', returnStatus: true)
                     if (isRunning == 0) {
                         sh 'docker stop vite-app && docker rm vite-app'
@@ -25,7 +32,7 @@ pipeline {
 
         stage('Frontend Finish') {
             steps {
-                sh 'docker images -qf dangling=true | xargs -I{} docker rmi {}'
+                sh 'docker images -qf dangling=true | xargs -r docker rmi'
             }
         }
     }
