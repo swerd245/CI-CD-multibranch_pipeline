@@ -15,7 +15,7 @@ pipeline {
             steps {
                 script {
                     // 80번 포트를 사용 중인 컨테이너 확인 및 중지
-                    def isPortInUse = sh(script: "docker ps -q --filter 'port=8181'", returnStatus: true)
+                    def isPortInUse = sh(script: "docker ps -q --filter 'port=8081'", returnStatus: true)
                     if (isPortInUse == 0) {
                         sh "docker ps -q --filter 'port=8181' | xargs -r docker stop"
                     }
@@ -26,7 +26,7 @@ pipeline {
                         sh 'docker stop vite-app && docker rm vite-app'
                     }
                 }
-                sh 'docker run -d -p 8181:80 --name vite-app swerd245/vite-app'
+                sh 'docker run -d -p 8081:80 --name vite-app swerd245/vite-app'
             }
         }
 
